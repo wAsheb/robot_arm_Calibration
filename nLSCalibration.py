@@ -24,14 +24,13 @@ plt.rcParams['image.cmap'] = 'gray'
 get_ipython().magic('load_ext autoreload')
 get_ipython().magic('autoreload 2')
 
-np.random.seed(1)
-# In[1]
+
 trainData = pn.read_excel('sample.xlsx')
 testData  = pn.read_excel('sample2.xlsx')
 #print the column names
 print (trainData.columns)
 
-# In[3]:
+
 m = len(trainData['X'])
 m1 = len(testData['X'])
 numParameters = 24 # number of parameters
@@ -59,11 +58,12 @@ testq_ref[5,:] = testData['A6'].values
 
 tQ_ref = D2R*testq_ref
 print(testq_ref.shape)
-# In[4]
+
+
 P_n = Matrix([a[0],alp[0],d[1],q[1],a[1],alp[1],d[2],q[2],a[2],alp[2],d[3],q[3],
               a[3],alp[3],d[4],q[4],a[4],alp[4],d[5],q[5],a[5],alp[5],d[6],q[6]])
 
-# In[5]
+
 def measuredX(data):
     l = len(data['X'])
     mX = np.zeros((3*l,1), dtype = np.float32)
@@ -74,11 +74,13 @@ def measuredX(data):
         mX[countt+2,0] = (data['Z'].values)[j]     #val_mZ[j]
         countt +=3
     return mX
-# In[6]
+  
+#Test
 #mx = measuredX(trainData)
 #print(mx[0:3,:])
 
-# In[6]
+
+
 def Xr_and_Jacobian(nParam,jointConfig,theta_ref,dq,Tool):
     l      = theta_ref.shape[1] 
     count  = 0
@@ -121,7 +123,7 @@ print(lp)
 #plt.title('observability Index')
 #plt.show() 
     
-# In[8]
+#
     
 def A_and_DJ(nParam,jointConfig,theta_ref,dq,Tool):
     l      = theta_ref.shape[1]
@@ -145,7 +147,7 @@ def A_and_DJ(nParam,jointConfig,theta_ref,dq,Tool):
     
     return Xr,J_dna
     
-# In[10]
+# 
 """
 This fucntion do non-linear leastsquare optimization to calibrate robot kinematic parameter
 We plan to try jacobian of position w.r.t kin parameters i.e. J= dP/d(a,alpha,d,theta) 
@@ -233,6 +235,9 @@ def nLCalibration_NLS(num_iterations,learning_rate,epislon,print_costs=False):
             
         if(L_k < epislon): 
             return  
+          
+     
+ # Plot result
     print("Improvment in Accuracy is:"+str((costs[0] - costs[-1])*100/costs[0])+"%")
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
@@ -264,8 +269,7 @@ def nLCalibration_NLS(num_iterations,learning_rate,epislon,print_costs=False):
 """
 This fucntion do linear leastsquare optimization to calibrate robot kinematic parameter
 We plan to try jacobian of position w.r.t kin parameters i.e. J= dP/d(a,alpha,d) 
-use sysmbolic python for that purpose. In selecting the measured data point for calibiration
-Observability measure is considered.
+use sysmbolic python for that purpose. In selecting the calibration trajectory Observability is considered.
 
 """
 def nLCalibration_LS(num_iterations,learning_rate,epislon,full_parameters = True,print_costs=False):
@@ -276,7 +280,7 @@ def nLCalibration_LS(num_iterations,learning_rate,epislon,full_parameters = True
     n_P  --  nominal kinemartic parameter
     Xr   --- rference position to calibrate on
     qr   --  joint position corresponding to Xr
-    lr --- cosntant learning rate to update the kinematics parameter based on least square error
+    lr --- cosntant step size to update the kinematics parameter based on least square error
     epislon --- convergence chrateria 
     
     """
@@ -350,6 +354,7 @@ startTime = timeit.default_timer()
 
 parmd = nLCalibration_LS(num_iterations=2000,learning_rate=0.001,epislon =1e-3,full_parameters = True,print_costs=True)
 
+# write the result to file
 with open('calibParametersLS.csv', 'w') as f:
     [f.write('{0},{1}\n'.format(key, value)) for key, value in parmd.items()]
 
@@ -416,4 +421,3 @@ print(cost)
 #with open('aftercalib.csv', 'w') as f:
 #    [f.write('{0}\n,{1}\n'.format(xr, xm))]
 
-# In[16]
