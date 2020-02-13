@@ -30,7 +30,7 @@ DH_table = {'a0': 0.0,         'al0': PI,        'd1': -423.0,    'q1': 0.0,
             'a3': 65.0,        'al3': PI/2,      'd4': -284.0,    'q4': 0.0,
             'a4': 0.0,         'al4': -PI/2,     'd5': 0.0,       'q5': 0.0,
             'a5': 0.0,         'al5': -PI/2,     'd6': 90.5,      'q6': 0.0 }
-
+#update this during iteration
 nParameters = {'a0': 0.0,      'al0': PI,        'd1': -423.0,    'q1': 0.0,   
             'a1': 105.0,       'al1': PI/2,      'd2': 0.0,       'q2': 0.0, 
             'a2': 280.0,       'al2': 0.0,       'd3': 0.0,       'q3': 0.0,
@@ -51,12 +51,7 @@ jointConfig = {'q1':9.05880481e-02,
                'q4':1.92422551e-04,
                'q5':1.57268214e+00,
                'q6':1.29712690e-02}
-jointdq      = {'q1':0.0,
-               'q2':0.0,
-               'q3':0.0,
-               'q4':0.0,
-               'q5':0.0,
-               'q6':0.0}
+jointdq      = {'q1':0.0, 'q2':0.0, 'q3':0.0, 'q4':0.0, 'q5':0.0, 'q6':0.0}
 #sDH_table = {'a0': a[0],         'al0': alp[0],           'd1':  d[1],    'q1': q[1],
 #             'a1': a[1],         'al1': alp[1],           'd2':  d[2],    'q2': q[2],
 #             'a2': a[2],         'al2': alp[2],           'd3':  d[3],    'q3': q[3],
@@ -241,7 +236,7 @@ def copyJacobian(inJ,Jc):
     return 
 
 # In[19]
-def observIndex(J):
+def observability_Index(J):
     
     n = J.shape[0]/3
     obndx = 0
@@ -288,9 +283,8 @@ def compute_cost(AL, Y):
 # In[21]
 """
 this routine is to select a calibiration configuration from avialable pools of measured data
-compute Jacobian of each configuration
-agrigate the avvalible jocobian and check observability of the aggrigate
-if Observability index increase keep the point of decrease remove it 
+compute Jacobian of each configuration agrigate the avvalible jocobian and check observability of 
+the aggrigate if Observability index increase keep the point of decrease remove it 
 
 """
 #def calibConfigSelect(nominalParameters,measuredConfig,Tool):
